@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For My Love 💖</title>
+  <title>For Nyah ko</title>
   <meta name="description" content="A cute, pink, password-protected love letter." />
   <style>
     :root{
@@ -139,3 +139,147 @@
 
         <!-- Blurred letter content until unlocked -->
         <div class="letter-content" id="letterContent">
+          <p>Hi love,</p>
+          <p>
+            This is where your long, heartfelt letter goes. Write everything you feel — the silly moments,
+            the quiet comforts, the ways she colors your days. You can paste paragraphs and they’ll wrap beautifully.
+            Until then, here’s placeholder text: From sunrise giggles to starlit whispers, you are my favorite part of
+            every day. Thank you for being you, for choosing us, for holding my hand through every season.
+          </p>
+          <p>
+            I love you more than all the pink skies, cotton-candy clouds, and strawberry milk in the world.
+            Always and forever, it’s you. 💖
+          </p>
+          <p>— Yours</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <small>Made with 💗 just for you.</small>
+      </div>
+    </section>
+  </main>
+
+  <!-- Password modal -->
+  <dialog id="pwDialog">
+    <form method="dialog" class="modal" id="pwForm" aria-labelledby="pwTitle">
+      <div class="modal-head">
+        <span class="dot" aria-hidden="true"></span>
+        <strong id="pwTitle">Enter the secret password</strong>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Type the magic word" autocomplete="current-password" required />
+          <div class="error" id="error" role="status" aria-live="polite"></div>
+          <div class="hint" id="hint" hidden></div>
+        </div>
+        <div class="row">
+          <button class="btn" value="cancel">Cancel</button>
+          <button class="btn primary" id="submitPw" value="default">Unlock 💖</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    // ====== EASY SETTINGS ======
+    // 1) Change this to your desired password (case-sensitive).
+    const PASSWORD = "iloveyou"; // ← set yours
+
+    // 2) (Optional) Set a small hint for your GF. Leave empty to hide.
+    const PASSWORD_HINT = "Our 1st month nickname 💕"; // e.g., "Our anniversary month"
+
+    // 3) (Optional) How many hearts in the background (performance friendly: 16–30)
+    const HEART_COUNT = 24;
+
+    // ====== HEART FIELD ======
+    const field = document.getElementById('hearts');
+    const vw = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = () => Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+    function spawnHearts(){
+      field.innerHTML = '';
+      for(let i=0;i<HEART_COUNT;i++){
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const size = 10 + Math.random()*22; // 10–32
+        h.style.width = size + 'px';
+        h.style.left = Math.random()*vw() + 'px';
+        h.style.animationDuration = 8 + Math.random()*8 + 's';
+        h.style.animationDelay = -Math.random()*12 + 's';
+        h.style.opacity = 0.35 + Math.random()*0.35;
+        field.appendChild(h);
+      }
+    }
+    spawnHearts();
+    window.addEventListener('resize', spawnHearts);
+
+    // ====== LOCK/UNLOCK BEHAVIOR ======
+    const card = document.getElementById('card');
+    const letter = document.getElementById('letterContent');
+    const openModalBtn = document.getElementById('openModal');
+    const dialog = document.getElementById('pwDialog');
+    const form = document.getElementById('pwForm');
+    const input = document.getElementById('password');
+    const err = document.getElementById('error');
+    const hint = document.getElementById('hint');
+
+    // show hint if provided
+    if(PASSWORD_HINT && PASSWORD_HINT.trim() !== ''){
+      hint.hidden = false;
+      hint.textContent = 'Hint: ' + PASSWORD_HINT;
+    }
+
+    // ensure locked state on load
+    function lock(){
+      card.classList.add('locked');
+    }
+    function unlock(){
+      card.classList.remove('locked');
+      err.textContent = '';
+    }
+    lock();
+
+    // clicking the big button opens modal
+    openModalBtn?.addEventListener('click', () => {
+      dialog.showModal();
+      setTimeout(() => input.focus(), 50);
+    });
+
+    // submit handler
+    form.addEventListener('submit', (e) => {
+      // The <form method="dialog"> means the dialog closes automatically,
+      // but we want to validate first. So prevent, then manually close on success.
+      e.preventDefault();
+      const typed = input.value;
+      if(typed === PASSWORD){
+        unlock();
+        dialog.close();
+        input.value = '';
+      } else {
+        err.textContent = 'That doesn\'t look right. Try again?';
+        input.select();
+      }
+    });
+
+    // Close on backdrop click
+    dialog.addEventListener('click', (e) => {
+      const rect = dialog.getBoundingClientRect();
+      const clickedInDialog = (
+        e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom
+      );
+      if(!clickedInDialog){ dialog.close(); }
+    });
+
+    // accessibility: ESC to close removes any error message
+    dialog.addEventListener('close', () => { err.textContent = ''; });
+
+    // keyboard shortcut: press L to open, once (cute easter egg)
+    document.addEventListener('keydown', (e) => {
+      if(e.key.toLowerCase() === 'l' && dialog.open === false){ dialog.showModal(); }
+    });
+  </script>
+</body>
+</html>
