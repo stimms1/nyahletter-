@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For My Love 💖</title>
+  <meta name="description" content="A cute, pink, password-protected love letter." />
+  <style>
+    :root{
+      --bg1:#ffd1e6; /* light pink */
+      --bg2:#ff9ac2; /* candy pink */
+      --ink:#553344; /* text */
+      --ink-soft:#6b4a59;
+      --card:#ffffffee;
+      --accent:#ff66a1; /* hot pink */
+      --accent-2:#ff7fb5;
+      --ring:#ffb6d9;
+      --blur: 8px;
+      --radius: 24px;
+      --shadow: 0 20px 60px rgba(255, 105, 180, .25);
+    }
+
+    /* Pink candy gradient sky */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, #fff0f7 0, transparent 60%),
+        radial-gradient(1000px 600px at 110% 10%, #ffe3f1 0, transparent 50%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* floating hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+    .heart{position:absolute; width:16px; aspect-ratio:1; opacity:.5; filter:drop-shadow(0 6px 10px rgba(255,0,90,.2));
+      animation: floatUp linear infinite;
+    }
+    .heart::before, .heart::after{
+      content:""; position:absolute; inset:0; background: #fff; border-radius:50%;
+    }
+    .heart::before{transform:translateX(-50%);} /* left lobe */
+    .heart::after{transform:translateY(-50%);} /* top lobe */
+    .heart{background:#fff; transform:rotate(45deg);} /* square turned heart */
+    @keyframes floatUp{
+      from{transform:translateY(110vh) rotate(45deg) scale(.8);}
+      to{transform:translateY(-20vh) rotate(45deg) scale(1.2);}
+    }
+
+    /* layout */
+    .wrap{position:relative; min-height:100%; display:grid; place-items:center; padding:40px 16px;}
+    .card{
+      position:relative; z-index:1; width:min(860px, 92vw); background:var(--card);
+      border-radius:var(--radius); box-shadow: var(--shadow); backdrop-filter:saturate(120%) blur(2px);
+      border:1px solid #ffd8ea;
+    }
+    .card-header{
+      padding:28px 28px 16px; text-align:center;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px;
+      background: #fff4f9; border:1px solid #ffd3e6; color:#b33d74; font-weight:600; letter-spacing:.2px; font-size:14px;
+      box-shadow: 0 8px 20px rgba(255,118,165,.18) inset;
+    }
+    .title{ font-size: clamp(28px, 4vw, 40px); margin:14px 0 4px; color:#b33d74; }
+    .subtitle{ margin:0; color:#a05274; font-size: clamp(14px, 2vw, 16px); }
+
+    .letter{
+      position:relative; margin: 12px 0; padding: 24px 28px 28px; line-height:1.7; font-size: 18px; color: var(--ink-soft);
+      border-top:1px dashed #ffb4cf; border-bottom:1px dashed #ffb4cf; background: #fff8fbcc;
+      border-radius: 18px; min-height: 260px;
+    }
+
+    /* blur lock state */
+    .locked .letter-content{filter: blur(var(--blur)); pointer-events:none; user-select:none;}
+    .locked .veil{opacity:1; visibility:visible;}
+
+    .letter-content{transition: filter .35s ease;}
+
+    /* center button overlay */
+    .veil{
+      position:absolute; inset:0; display:grid; place-items:center; backdrop-filter: blur(0px);
+      opacity:0; visibility:hidden; transition: opacity .3s ease, visibility .3s ease;
+    }
+
+    .cta{
+      display:inline-flex; align-items:center; gap:10px; padding:14px 20px; border-radius:999px;
+      border:2px solid var(--ring); background:linear-gradient(180deg,#fff,#ffe8f2);
+      color:#b33d74; font-size:18px; font-weight:700; cursor:pointer; box-shadow:0 10px 30px rgba(255, 84, 146, .25);
+      transform: translateY(0); transition: transform .15s ease, box-shadow .2s ease;
+    }
+    .cta:hover{ transform: translateY(-2px); box-shadow:0 14px 36px rgba(255, 84, 146, .32);}
+    .cta .heart-emoji{font-size:22px;}
+
+    /* modal */
+    dialog{ border:none; border-radius: 20px; padding: 0; width:min(420px, 90vw); box-shadow: var(--shadow); }
+    .modal{ background:#fff; border:1px solid #ffd8ea; border-radius: inherit; overflow:hidden;}
+    .modal-head{ padding:18px 20px; background:linear-gradient(180deg,#fff7fb,#ffe3f0); border-bottom:1px solid #ffd8ea; display:flex; align-items:center; gap:10px;}
+    .modal-head .dot{ width:10px; aspect-ratio:1; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px #ffd6e8;}
+    .modal-body{ padding:20px; display:grid; gap:12px; }
+    .field{ display:grid; gap:8px; }
+    label{ font-weight:600; color:#b33d74; }
+    input[type="password"]{
+      padding:12px 14px; border-radius:12px; border:1.5px solid #ffd0e5; outline:none; font-size:16px; background:#fff; color:var(--ink);
+    }
+    input[type="password"]:focus{ border-color:#ffa3c9; box-shadow:0 0 0 4px #ffe4f1;}
+    .row{ display:flex; gap:10px; justify-content:flex-end; }
+    .btn{ padding:10px 14px; border-radius:12px; border:1.5px solid #ffc1dc; background:#fff; font-weight:700; color:#b33d74; cursor:pointer; }
+    .btn.primary{ background:linear-gradient(180deg,#fff,#ffe5f1); border-color:#ffb2d1; }
+    .hint{ font-size:12px; color:#a36; opacity:.8; }
+    .error{ color:#b00048; font-size:14px; min-height:1em; }
+
+    /* footer */
+    .footer{ padding:14px 20px 22px; text-align:center; color:#9a5d79; font-size:14px; }
+    .footer small{ opacity:.8; }
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden="true" id="hearts"></div>
+
+  <main class="wrap">
+    <section class="card locked" id="card">
+      <header class="card-header">
+        <span class="badge">💞 A little love note</span>
+        <h1 class="title">For the one who makes my world pink</h1>
+        <p class="subtitle">(Click the button below to unlock your letter 💌)</p>
+      </header>
+
+      <div class="letter">
+        <!-- Centered button overlay when locked -->
+        <div class="veil">
+          <button class="cta" id="openModal" aria-haspopup="dialog" aria-controls="pwDialog">
+            <span class="heart-emoji">💗</span>
+            <span>Unlock Letter</span>
+          </button>
+        </div>
+
+        <!-- Blurred letter content until unlocked -->
+        <div class="letter-content" id="letterContent">
